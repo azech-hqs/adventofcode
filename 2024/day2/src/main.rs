@@ -28,6 +28,23 @@ impl Report {
     fn is_safe_as_num(&self) -> i32 {
         return self.is_safe(&self.levels);
     }
+
+    fn is_safe_tolerate(&self) -> i32 {
+        let safe_num = self.is_safe_as_num();
+
+        if safe_num == 1 {
+            return safe_num;
+        }
+
+        for i in 0..self.levels.len() {
+            let mut tmp_levels = self.levels.clone();
+            tmp_levels.remove(i);
+            if self.is_safe(&tmp_levels) == 1 {
+                return 1;
+            }
+        }
+        return 0;
+    }
 }
 
 fn main() -> Result<()> {
@@ -42,7 +59,7 @@ fn main() -> Result<()> {
                 .into_iter()
                 .collect::<Vec<i32>>(),
         })
-        .map(|r| r.is_safe_as_num())
+        .map(|r| r.is_safe_tolerate())
         .sum();
     println!("There are {:?} safe reports.", safe_sum);
 
