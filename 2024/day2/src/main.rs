@@ -6,11 +6,10 @@ struct Report {
 }
 
 impl Report {
-    fn is_safe_as_num(&self) -> i32 {
-        let diffvec: Vec<i32> = self
-            .levels
+    fn is_safe(&self, levels: &[i32]) -> i32 {
+        let diffvec: Vec<i32> = levels
             .iter()
-            .zip(self.levels.iter().skip(1))
+            .zip(levels.iter().skip(1))
             .map(|(a, b)| b - a)
             .collect();
 
@@ -24,6 +23,10 @@ impl Report {
             return 0;
         }
         return 1;
+    }
+
+    fn is_safe_as_num(&self) -> i32 {
+        return self.is_safe(&self.levels);
     }
 }
 
