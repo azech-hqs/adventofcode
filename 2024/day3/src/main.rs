@@ -32,15 +32,19 @@ fn read_content() -> Result<String, std::io::Error> {
     return read_to_string(filename);
 }
 
-fn main() {
-    let content = read_content().unwrap_or(String::from(
-        "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))",
-    ));
+fn evaluate_multiply(content: &str) -> i32 {
     let re = Regex::new(r"mul\(\d+,\d+\)").unwrap();
     let multiplied: i32 = re
         .find_iter(&content)
         .map(|x| Multiply::from_str(x.as_str()).unwrap().run())
         .sum();
+    println!("The total sum is {:?}", &multiplied);
+    return multiplied;
+}
 
-    println!("The total sum is {:?}", multiplied);
+fn main() {
+    let content = read_content().unwrap_or(String::from(
+        "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))",
+    ));
+    evaluate_multiply(&content);
 }
