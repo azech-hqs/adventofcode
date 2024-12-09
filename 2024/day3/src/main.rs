@@ -42,9 +42,30 @@ fn evaluate_multiply(content: &str) -> i32 {
     return multiplied;
 }
 
+fn evaluate_multiply_range(content: &str) -> i32 {
+    let re = Regex::new(r"mul\(\d+,\d+\)|do\(\)|don't\(\)").unwrap();
+    let mut active: bool = true;
+    let mut sum: i32 = 0;
+    for cmd in re.find_iter(content) {
+        let command = cmd.as_str();
+        if command.starts_with("don") {
+            active = false;
+        } else if command.starts_with("do") {
+            active = true;
+        };
+
+        if command.starts_with("mul") && active {
+            sum += Multiply::from_str(command).unwrap().run();
+        }
+    }
+    println!("The total sum of active commands is {:?}", &sum);
+    return sum;
+}
+
 fn main() {
     let content = read_content().unwrap_or(String::from(
         "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))",
     ));
     evaluate_multiply(&content);
+    evaluate_multiply_range(&content);
 }
