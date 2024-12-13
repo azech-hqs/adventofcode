@@ -93,13 +93,7 @@ impl WordMatrix {
         return self.data[y0].chars().nth(x0);
     }
 
-    /*
-     * 1. Start only from X
-     * 2. Walk 3 steps in all directions (if possible -> boundaries!).
-     * 3. Add +1 if walk yields XMAS.
-     * 4. (not sure) store which X's have been visited yet (path-dependent).
-     */
-    fn evaluate_path(&self, start: &Position, direction: Direction) -> i32 {
+    fn evaluate_path_xmas(&self, start: &Position, direction: Direction) -> i32 {
         let is_x = match self.get(start) {
             Some(x) => x.eq(&'X'),
             None => return 0,
@@ -131,14 +125,14 @@ impl WordMatrix {
                     x: x as i32,
                     y: y as i32,
                 };
-                count += self.evaluate_path(&pos, Direction::North);
-                count += self.evaluate_path(&pos, Direction::NorthEast);
-                count += self.evaluate_path(&pos, Direction::East);
-                count += self.evaluate_path(&pos, Direction::SouthEast);
-                count += self.evaluate_path(&pos, Direction::South);
-                count += self.evaluate_path(&pos, Direction::SouthWest);
-                count += self.evaluate_path(&pos, Direction::West);
-                count += self.evaluate_path(&pos, Direction::NorthWest);
+                count += self.evaluate_path_xmas(&pos, Direction::North);
+                count += self.evaluate_path_xmas(&pos, Direction::NorthEast);
+                count += self.evaluate_path_xmas(&pos, Direction::East);
+                count += self.evaluate_path_xmas(&pos, Direction::SouthEast);
+                count += self.evaluate_path_xmas(&pos, Direction::South);
+                count += self.evaluate_path_xmas(&pos, Direction::SouthWest);
+                count += self.evaluate_path_xmas(&pos, Direction::West);
+                count += self.evaluate_path_xmas(&pos, Direction::NorthWest);
                 println!("count is {:?}", &count);
             }
         }
