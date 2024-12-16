@@ -138,6 +138,49 @@ impl WordMatrix {
         }
         return count;
     }
+
+    fn evaluate_cross_mas(&self, start: &Position) -> i32 {
+        let is_a = match self.get(&start) {
+            Some(a) => a.eq(&'A'),
+            None => return 0,
+        };
+        if !is_a {
+            return 0;
+        }
+
+        let x_letters: String = [
+            &start.step_one(&Direction::NorthWest),
+            &start.step_one(&Direction::NorthEast),
+            &start.step_one(&Direction::SouthEast),
+            &start.step_one(&Direction::SouthWest),
+        ]
+        .iter()
+        .map(|x| self.get(x).unwrap_or(' '))
+        .collect();
+
+        if x_letters.as_str() == "MMSS"
+            || x_letters.as_str() == "SSMM"
+            || x_letters.as_str() == "MSSM"
+            || x_letters.as_str() == "SMMS"
+        {
+            return 1;
+        }
+        return 0;
+    }
+
+    fn count_cross_mas(&self) -> i32 {
+        let mut count = 0;
+        for y in 1usize..self.y_max() - 1 {
+            for x in 1..self.x_max() - 1 {
+                let pos = Position {
+                    x: x as i32,
+                    y: y as i32,
+                };
+                count += self.evaluate_cross_mas(&pos);
+            }
+        }
+        return count;
+    }
 }
 
 fn read_word_matrix() -> WordMatrix {
@@ -163,5 +206,8 @@ fn main() {
     let mat = read_word_matrix();
     let count = mat.count_xmas();
 
-    println!("The count is {:?}", count);
+    println!("The XMAS count is {:?}", count);
+
+    let count = mat.count_cross_mas();
+    println!("The X-MAS count is {:?}", count);
 }
